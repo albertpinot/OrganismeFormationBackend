@@ -24,7 +24,7 @@ public class ParticipantController {
 	private ParticipantService service;
 	
 	@GetMapping("")
-	public List<Participant> findAll() {
+	public List<AjoutParticipant> findAll() {
 		return this.service.findAll();
 	}
 	

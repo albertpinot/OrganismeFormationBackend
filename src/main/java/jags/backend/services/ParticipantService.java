@@ -2,12 +2,10 @@ package jags.backend.services;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import jags.backend.DTO.AjoutParticipant;
 import jags.backend.entities.BilanParticipantSession;
 import jags.backend.entities.Entreprise;
@@ -33,10 +31,11 @@ public class ParticipantService {
 
 	/**
 	 * Récupère tout les participants contenu dans la bdd
-	 * @return la liste de tout les participants
+	 * @return la liste de tout les participants au format DTO AjoutParticipant
 	 */
-	public List<Participant> findAll() {
-		return this.repository.findAll();
+	public List<AjoutParticipant> findAll() {
+		List<Participant> participants = this.repository.findAll();		
+		return recupererListeParticipantsDTO(participants);		 
 	}
 
 	/**
@@ -106,5 +105,19 @@ public class ParticipantService {
 			idParticipant.add(bilan.getParticipant().getId());
 		}
 		return this.repository.findAllById(idParticipant);
+	}
+	
+	/**
+	 * Recupération d'une liste au format DTO ajoutParticipant
+	 * @param une liste de participants au format Participant
+	 * @return une liste de participants au format DTO ajoutParticipant
+	 */
+	public List<AjoutParticipant> recupererListeParticipantsDTO(List<Participant> participants){
+		List<AjoutParticipant> listeAjoutParticipant = new ArrayList<>();
+		for (Participant participant : participants) {
+			AjoutParticipant ajoutParticipant =ParticipantToAjoutParticipant(participant);
+			listeAjoutParticipant.add(ajoutParticipant);
+		}
+		return listeAjoutParticipant;
 	}
 }
