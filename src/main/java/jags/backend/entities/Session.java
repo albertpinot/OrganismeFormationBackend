@@ -20,6 +20,8 @@ import javax.persistence.UniqueConstraint;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Component
 @Table(name="Session")
@@ -57,14 +59,17 @@ public class Session {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 //    @MapsId("id")
+	@JsonIgnore
 	@JoinColumn(name="Formation_id")
     private Formation formation;
 	
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 //    @MapsId("id")
 	@JoinColumn(name="Lieu_id")
     private Lieu lieu;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "session")
 	private List<BilanParticipantSession> bilanParticipantSessions;
 

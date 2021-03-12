@@ -77,6 +77,7 @@ public class SessionService {
 		sessionDTO.setDuree(session.getDuree());
 		sessionDTO.setDateDebut(session.getDateDebut());
 		determinerDatedeFinSession(sessionDTO.getDuree());
+		sessionDTO.setDateFin(session.getDateFin());
 		sessionDTO.setIdFormation(session.getFormation().getId());
 		sessionDTO.setIdLieu(session.getLieu().getId());
 		return sessionDTO;

@@ -1,11 +1,15 @@
 package jags.backend.services;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import jags.backend.DTO.CoordonneeDTO;
+import jags.backend.DTO.Evaluation;
 import jags.backend.DTO.InscriptionParticipantEmploye;
 import jags.backend.DTO.InscriptionParticipantParticulier;
 import jags.backend.DTO.ResumeInscription;
@@ -109,6 +113,8 @@ public class BilanParticipantSessionService {
 		if (!findByParticipantIdAndSessionId(participantId,sessionId)) {
 			creationBilan();
 			sauvegardeCoordonneeParticipant(coordonnee);
+		}else {
+			throw new IllegalArgumentException(MessageFormat.format("Le participant numéro {0} est déjà inscrit à la session numéro {1}", participantId, sessionId));
 		}
 		
 	}
@@ -209,13 +215,57 @@ public class BilanParticipantSessionService {
 	}
 	
 	/**
+	 * Récupération d'un bilan par son ID
+	 * @param id du bilan rechercher
+	 * @return L'objet qui est trouvé sinon lève une execption
+	 */
+	public BilanParticipantSession findById(Long id) {
+		return this.repository.findById(id)
+				.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
+	}
+	
+	/**
+	 * Convertis l'objet bilan reçu du front (Traitement de données)
+	 * vers l'objet bilan contenu dans la BDD dans le cas d'une évaluation
+	 * @param bilanParticipantSession Dto Evaluation reçu du front lors d'une évaluation d'une session
+	 */
+	public void bilanToBilanDto(Evaluation bilanParticipantSession) {
+		bilan.setId(bilanParticipantSession.getId());
+		bilan.setAccueil(bilanParticipantSession.getAccueil());
+		bilan.setAnimation(bilanParticipantSession.getAnimation());
+		bilan.setContenu(bilanParticipantSession.getContenu());
+		bilan.setDisponibilite(bilanParticipantSession.getDisponibilite());
+		bilan.setEnvironnement(bilanParticipantSession.getEnvironnement());
+		bilan.setMaitrise(bilanParticipantSession.getMaitrise());
+		bilan.setPedagogie(bilanParticipantSession.getPedagogie());
+		bilan.setPrerequis(bilanParticipantSession.getPrerequis());
+		bilan.setRecommandation(bilanParticipantSession.getRecommandation());
+		bilan.setReponse(bilanParticipantSession.getReponse());
+		bilan.setSouhaitFormation(bilanParticipantSession.getSouhaitFormation());
+		bilan.setSatisfaction(bilanParticipantSession.getSatisfaction());
+		bilan.setParticipant(bilan.getParticipant());
+		bilan.setSession(bilan.getSession());
+	}
+	
+	/**
+	 * Permet de vérifier si un bilan est contenu(existe) dans la table bilanSessionParticipant
+	 * @param id du bilan qui existe ou non
+	 * @return un Boolean
+	 */
+	public Boolean existsById(Long id) {
+		 return this.repository.existsById(id);
+	}
+	
+	/**
 	 * Methode permettant d'enregistrer l'evaluation d'une session d'un participant
 	 * @param bilanParticipantSession objet contenant les valeurs de l'evalaution du participant 
 	 */
-	public void evaluationSession(BilanParticipantSession bilanParticipantSession) {
-//		bilan = this.repository.findByParticipantIdAndSessionId(bilanParticipantSession.getParticipant().getId(), bilanParticipantSession.getSession().getId());
-//		bilanParticipantSession.setId(bilan.getId());
-//		this.repository.save(bilanParticipantSession);
+	public void evaluationSession(Evaluation bilanParticipantSession) {
+		if (existsById(bilanParticipantSession.getId())) {
+			bilan = findById(bilanParticipantSession.getId());
+			bilanToBilanDto(bilanParticipantSession);
+			this.repository.save(bilan);
+		}
 	}
 	
 	/**
