@@ -6,7 +6,7 @@ Client : IT-Training (OF organisation de formation).
 
 Contexte : Un organisme de formation, IT-Training, souhaite refaire entièrement son système d’information ainsi que son portail web. A cet effet, IT-Training a établi une version préliminaire du cahier des charges (CDC). Il est important de noter que ce dernier pourra tout à fait être modifié et étendu tout le long du cycle de développement et de livraison du Système d'Information ainsi que du portail web. Le délai fixé par le client est de quatre mois maximum à partir de la soumission du CDC.
 
-Voici la problématique retenu : Refonte complète du site web d’IT Training.
+Voici la problématique retenue : Refonte complète du site web d’IT Training.
 
 La partie suivante expliquera les prérequis pour la création du back-end de notre application.
 
